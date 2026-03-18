@@ -38,6 +38,6 @@ app.use("/api/v1", NoteRoute);
 
 const PORT = process.env.PORT || 5001;
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server Listning on http://localhost:${PORT}`);
 });

@@ -11,8 +11,11 @@ const NotesSchema = new mongoose.Schema(
       required: true,
     },
     color: {
-      type: String,
-      default: "border-none",
+      type: Object,
+      default: {
+        border: "border-none",
+        bg: "bg-none"
+      },
     },
   },
   {
