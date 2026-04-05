@@ -14,7 +14,7 @@ export const createUser = async (req, res) => {
     const normEmail = email.trim().toLowerCase()
     
     // validate
-    if (!normName || !normEmail || !password) {
+    if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
         message: "All Fields are required",
@@ -81,13 +81,10 @@ export const getUser = async (req, res) => {
         message: "User not found"
       })
     }
-
-    const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "7d" })
   
     res.status(200).json({
       status: true,
       message: "User Fetched Successfully",
-      accessToken: accessToken,
       data: user 
     })
   } catch (err) {
