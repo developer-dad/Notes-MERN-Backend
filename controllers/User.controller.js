@@ -8,12 +8,25 @@ export const createUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
+    
+    // normalize name and email
+    const normName = name.trim().toLowerCase()
+    const normEmail = email.trim().toLowerCase()
+    
     // validate
-    if (!name || !email || !password) {
+    if (!normName || !normEmail || !password) {
       return res.status(400).json({
         success: false,
         message: "All Fields are required",
       });
+    }
+
+    // password validation
+    if(password.length < 6){
+      return res.status(401).json({
+        success: false,
+        message: "Password must me more then 6 letters."
+      })
     }
 
     // check existing
@@ -31,8 +44,8 @@ export const createUser = async (req, res) => {
 
     // Save to database
     const user = await User.create({
-      name: name,
-      email: email,
+      name: normName,
+      email: normEmail,
       password: hashPassword,
     });
 
@@ -90,22 +103,36 @@ export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    // normailze email
+    const normEmail = email.trim().toLowerCase()
+
     // validate
-    if (!email || !password) {
+    if (!normEmail || !password) {
       return res.status(400).json({
         success: false,
         message: "Email and password are required",
       });
     }
 
+    // password validation
+    if(password.length < 6){
+      return res.status(401).json({
+        success: false,
+        message: "Password must have 6 letters"
+      })
+    }
+
     // check email exists
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: normEmail });
     if (!user) {
       return res.status(400).json({
         success: false,
         message: "Invalid Credentials",
       });
     }
+
+    // removing password from response
+    const { password: _, ...userData } = user._doc
 
     // password matches
     const isMatch = await bcrypt.compare(password, user.password);
@@ -125,7 +152,7 @@ export const loginUser = async (req, res) => {
       success: true,
       accessToken: accessToken,
       message: "Token Created Successfully",
-      data: user
+      data: userData
     });
   } catch (err) {
     res.status(500).json({

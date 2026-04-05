@@ -10,9 +10,7 @@ import connectToDB from "./config/db.config.js";
 const app = express();
 
 app.use(express.json());
-app.use(cors({
-  origin: "https://delta-notes-lovat.vercel.app"
-}))
+app.use(cors())
 
 app.use("/api/v1/notes", NoteRoute); 
 app.use('/api/v1/user', userRouter)
