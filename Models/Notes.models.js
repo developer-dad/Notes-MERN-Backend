@@ -17,6 +17,11 @@ const NotesSchema = new mongoose.Schema(
         bg: "bg-none"
       },
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    }
   },
   {
     timestamps: true,

@@ -1,54 +1,115 @@
 import Note from "../Models/Notes.models.js";
 
-export const getNotes = async (req, res) => {
-  try {
-    const notes = await Note.find().sort({ createdAt: -1 });
-    res.status(200).json(notes);
-  } catch (err) {
-    res.status(500).json({ message: err });
-  }
-};
-
+// Logic to create a new note
 export const createNote = async (req, res) => {
   try {
     const { title, content, color } = req.body;
     if (!title || !content) {
-      return res.status(400).json({ message: "Title and Content both are required" });
+      return res.status(400).json({
+        success: false,
+        message: "Title and Content both are required"
+      });
     }
-    const newNote = new Note({ title, content, color });
-    await newNote.save();
-    res.status(201).json(newNote);
+    const newNote = await Note.create({ title, content, color, userId: req.user.id });
+    res.status(201).json({
+      success: true,
+      message: "New Note Created",
+      data: newNote
+    });
   } catch (err) {
-    res.status(500).json({ message: err });
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
 };
 
+// Logic to display all notes
+export const getNotes = async (req, res) => {
+  try {
+    const notes = await Note.find({ userId: req.user.id }).sort({ createdAt: -1 });
+    res.status(200).json({
+      success: true,
+      message: "Successfully fetched all notes",
+      data: notes
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+};
+
+// Logic to update a note by it's id
 export const updateNote = async (req, res) => {
   try {
     const { title, content, color } = req.body;
     const { id } = req.params;
-    const updateNote = await Note.findByIdAndUpdate(
-      id,
-      { title, content, color },
-      { new: true },
-    );
-    if (!updateNote) {
-      return res.status(404).json({ message: "Note not Updated" });
+    // auth check
+    if(!req.user || !req.user.id){
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized User"
+      })
     }
-    res.status(200).json(updateNote);
+    // check if empty title or content is not updating
+    if(!title && !content){
+      return res.status(400).json({
+        success: false,
+        message: "Title and Content are required"
+      })
+    }
+    const newNote = await Note.findByIdAndUpdate(
+      { _id: id, userId: req.user.id },
+      { title, content, color },
+      { new: true, runValidators: true }
+    );
+    if (!newNote) {
+      return res.status(404).json({
+        success: false,
+        message: "Note not Updated"
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Note updated successfully",
+      data: newNote
+    });
   } catch (err) {
-    res.status(500).json({ message: err });
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
 };
 
+// Logic to delete a note by it's id
 export const deleteNote = async (req, res) => {
   try {
-    const deleteNote = await Note.findByIdAndDelete(req.params.id);
-    if (!deleteNote) {
-      return res.status(404).json({ message: "Note not found" });
+    // check auth
+    if(!req.user || !req.user.id){
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized User"
+      })
     }
-    res.status(200).json({ message: "Note deleted successfully" });
+    const { id } = req.params
+    const removeNote = await Note.findOneAndDelete({ _id: id, userId: req.user.id });
+    if (!removeNote) {
+      return res.status(404).json({
+        success: false,
+        message: "Note not found"
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Note deleted successfully"
+    });
   } catch (err) {
-    res.status(500).json({ message: err });
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
 };
