@@ -11,7 +11,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-  origin: "https://https://delta-notes-lovat.vercel.app/"
+  origin: "https://delta-notes-lovat.vercel.app/"
 }))
 
 app.use("/api/v1/notes", NoteRoute); 
