@@ -5,7 +5,7 @@ dotenv.config();
 
 import NoteRoute from "./routes/Notes.route.js";
 import userRouter from "./routes/User.route.js";
-import connectToDB from "./config/db.config.js";
+import connectToDB from "./Config/db.config.js";
 
 const app = express();
 
