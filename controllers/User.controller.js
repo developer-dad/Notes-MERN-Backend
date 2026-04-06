@@ -1,4 +1,4 @@
-import User from "../Models/User.model.js";
+import User from "../models/User.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";

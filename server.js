@@ -3,8 +3,8 @@ import cors from 'cors'
 import dotenv from "dotenv";
 dotenv.config();
 
-import NoteRoute from "./Routes/Notes.route.js";
-import userRouter from "./Routes/User.route.js";
+import NoteRoute from "./routes/Notes.route.js";
+import userRouter from "./routes/User.route.js";
 import connectToDB from "./config/db.config.js";
 
 const app = express();
