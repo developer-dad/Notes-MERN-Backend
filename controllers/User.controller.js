@@ -238,10 +238,10 @@ try {
 // Logic for resetting password
 export const resetPassword = async (req, res) => {
   try {
-    const { email, otp, newPassword } = req.body;
+    const { email, otp, password } = req.body;
 
     // validation
-    if (!email || !otp || !newPassword) {
+    if (!email || !otp || !password) {
       return res.status(400).json({
         success: false,
         message: "All fields are required"
@@ -273,7 +273,7 @@ export const resetPassword = async (req, res) => {
     }
 
     // hash new password
-    const hashNewPassword = await bcrypt.hash(newPassword, 10);
+    const hashNewPassword = await bcrypt.hash(password, 10);
     user.password = hashNewPassword;
 
     // clear OTP after use
