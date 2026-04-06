@@ -1,4 +1,4 @@
-import transporter from "../config/NodeMailer.config.js";
+import transporter from "../Config/NodeMailer.config.js";
 
 const sendOTP = async (email, otp) => {
   try {
