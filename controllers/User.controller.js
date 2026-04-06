@@ -2,7 +2,7 @@ import User from "../Models/User.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import sendOTP from "../utils/sendOTP.config.js"
+import sendOTP from "../utils/sendOTP.utils.js"
 
 // Logic to create a new user
 export const signupUser = async (req, res) => {
